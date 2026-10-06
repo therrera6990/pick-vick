@@ -23,13 +23,13 @@ fi
 echo "Deploying Pick Vick to $HOST..."
 
 echo "Copying files to EC2..."
-rsync -avz \
-    --exclude ".git" \
-    --exclude ".env" \
-    --exclude "*.pem" \
-    --exclude "__pycache__" \
-    -e "ssh -i \"$KEY\"" \
-    ./ ubuntu@"$HOST":/var/www/pick-vick/
+scp -i "$KEY" -r \
+    manage.py \
+    requirements.txt \
+    start.sh \
+    pick_vick \
+    deploy \
+    ubuntu@"$HOST":/var/www/pick-vick/
 
 echo "Installing dependencies..."
 ssh -i "$KEY" ubuntu@"$HOST" \
