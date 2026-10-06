@@ -1,0 +1,13 @@
+[Unit]
+Description=Pick Vick Django Application
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/var/www/pick-vick
+ExecStart=/usr/bin/bash /var/www/pick-vick/start.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
