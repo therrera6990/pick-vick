@@ -28,6 +28,7 @@ scp -i "$KEY" -r \
     requirements.txt \
     start.sh \
     pick_vick \
+    fantasy \
     deploy \
     ubuntu@"$HOST":/var/www/pick-vick/
 
