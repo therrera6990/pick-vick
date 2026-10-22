@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.db import models
-from django.db import settings
 
 class League (models.Model):
     name = models.CharField(max_length=100)
@@ -78,3 +78,89 @@ class Roster(models.Model):
         on_delete=models.CASCADE,
         related_name="roster_entries"
     )
+
+
+    player = models.OneToOneField(
+        Player,
+        on_delete=models.CASCADE,
+        related_name="roster_entry"
+    )
+
+    roster_position = models.CharField(
+        max_length=20,
+        choices=ROSTER_POSITION_CHOICES,
+        default="BENCH"
+    )
+
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.player.name} - {self.fantasy_team.team_name}"
+
+
+class Matchup(models.Model):
+    week = models.IntegerField()
+
+    home_team = models.ForeignKey(
+        FantasyTeam,
+        on_delete=models.CASCADE,
+        related_name="home_matchups"
+    )
+
+    away_team = models.ForeignKey(
+        FantasyTeam,
+        on_delete=models.CASCADE,
+        related_name="away_matchups"
+    )
+
+    home_score = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0
+    )
+
+    away_score = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0
+    )
+
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Week {self.week}: {self.home_team} vs {self.away_team}"
+
+
+class Transaction(models.Model):
+    TRANSACTION_CHOICES = [
+        ("ADD", "Add"),
+        ("DROP", "Drop"),
+    ]
+
+    fantasy_team = models.ForeignKey(
+        FantasyTeam,
+        on_delete=models.CASCADE,
+        related_name="transactions"
+    )
+
+    player = models.ForeignKey(
+        Player,
+        on_delete=models.CASCADE,
+        related_name="transactions"
+    )
+
+    transaction_type = models.CharField(
+        max_length=20,
+        choices=TRANSACTION_CHOICES
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return (
+            f"{self.fantasy_team.team_name} "
+            f"{self.transaction_type} "
+            f"{self.player.name}"
+        )

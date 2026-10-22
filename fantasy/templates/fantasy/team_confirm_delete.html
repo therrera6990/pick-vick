@@ -1,0 +1,34 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1>Delete Fantasy Team</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ team.team_name }}</strong>?
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="btn btn-danger">
+            Delete Team
+        </button>
+
+        <a
+            href="{% url 'team_detail' team.id %}"
+            class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
