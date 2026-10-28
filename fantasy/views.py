@@ -47,6 +47,15 @@ def player_list(request):
         {"players":players},
     )
 
+def player_detail(request, player_id):
+    player = get_object_or_404(Player, id=player_id)
+
+    return render(
+        request,
+        "fantasy/player_detail.html",
+        {"player": player},
+    )
+
 
 @login_required
 def team_create(request):

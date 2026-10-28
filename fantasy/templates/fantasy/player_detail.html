@@ -1,0 +1,50 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="mb-4">
+        {{ player.name }}
+    </h1>
+
+    <div class="card">
+        <div class="card-body">
+
+            <p>
+                <strong>Position:</strong>
+                {{ player.position }}
+            </p>
+
+            <p>
+                <strong>NFL Team:</strong>
+                {{ player.nfl_team }}
+            </p>
+
+            <p>
+                <strong>Fantasy Points:</strong>
+                {{ player.fantasy_points }}
+            </p>
+
+            <p>
+                <strong>Available:</strong>
+
+                {% if player.available %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+
+            <a
+                href="{% url 'player_list' %}"
+                class="btn btn-secondary">
+                Back to Players
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
