@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import FantasyTeamForm, RegisterForm
 from .models import FantasyTeam
+from .models import FantasyTeam, Player
 
 
 def home(request):
@@ -35,6 +36,15 @@ def team_list(request):
         request,
         "fantasy/team_list.html",
         {"teams": teams},
+    )
+
+def player_list(request):
+    players = Player.objects.all()
+
+    return render(
+        request,
+        "fantasy/player_list.html",
+        {"players":players},
     )
 
 

@@ -1,0 +1,59 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Players</h1>
+    </div>
+
+    {% if players %}
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>NFL Team</th>
+                        <th>Fantasy Points</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for player in players %}
+
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.position }}</td>
+                            <td>{{ player.nfl_team }}</td>
+                            <td>{{ player.fantasy_points }}</td>
+                            <td>
+                                {% if player.available %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    {% else %}
+
+        <p>No players have been added yet.</p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
