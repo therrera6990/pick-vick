@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import FantasyTeam
+from .models import FantasyTeam, Player
 
 
 class RegisterForm(UserCreationForm):
@@ -10,10 +10,30 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = [
+            "username",
+            "email",
+            "password1",
+            "password2",
+        ]
 
 
 class FantasyTeamForm(forms.ModelForm):
     class Meta:
         model = FantasyTeam
-        fields = ["league", "team_name"]
+        fields = [
+            "league",
+            "team_name",
+        ]
+
+
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = [
+            "name",
+            "position",
+            "nfl_team",
+            "fantasy_points",
+            "available",
+        ]

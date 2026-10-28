@@ -27,6 +27,12 @@ urlpatterns = [
     path("teams/", views.team_list, name="team_list"),
 
     path(
+        "players/create/",
+         views.player_create,
+          name="player_create",
+    ),
+
+    path(
         "teams/create/",
         views.team_create,
         name="team_create",
