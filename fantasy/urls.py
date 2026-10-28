@@ -57,6 +57,12 @@ urlpatterns = [
     ),
 
     path(
+        "players/<int:player_id>/edit/",
+        views.player_edit,
+        name="player_edit",
+    ),
+
+    path(
         "teams/<int:team_id>/delete/",
         views.team_delete,
         name="team_delete",

@@ -159,3 +159,31 @@ def player_create(request):
             "page_title": "Add Player",
         },
     )
+
+@login_required
+def player_edit(request, player_id):
+    player = get_object_or_404(Player, id=player_id)
+
+    if request.method == "POST":
+        form = PlayerForm(
+            request.POST,
+            instance=player,
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect(
+                "player_detail",
+                player_id=player.id,
+            )
+    else:
+        form = PlayerForm(instance=player)
+
+    return render(
+        request,
+        "fantasy/player_form.html",
+        {
+            "form": form,
+            "page_title": "Edit Player",
+        },
+    )
