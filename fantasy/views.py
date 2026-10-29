@@ -41,10 +41,26 @@ def team_list(request):
 def player_list(request):
     players = Player.objects.all()
 
+    search=request.GET.get("search", "")
+    position = request.GET.get("position", "")
+
+    if search:
+        players = players.filter(name__icontains=search)
+
+    if position:
+        players = players.filter(position=position)
+
+    context = {
+        "players": players,
+        "search": search,
+        "position": position,
+        "positions": Player.POSITION_CHOICES,
+    }
+
     return render(
         request,
         "fantasy/player_list.html",
-        {"players":players},
+        context,
     )
 
 def player_detail(request, player_id):
