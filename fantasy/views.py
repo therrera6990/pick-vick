@@ -140,6 +140,20 @@ def team_delete(request, team_id):
     )
 
 @login_required
+def player_delete(request, player_id):
+    player = get_object_or_404(Player, id=player_id)
+
+    if request.method == "POST":
+        player.delete()
+        return redirect("player_list")
+    
+    return render(
+        request,
+        "fantasy/player_confirm_delete.html",
+        {"player": player},
+    )
+
+@login_required
 def player_create(request):
     if request.method == "POST":
         form = PlayerForm(request.POST)

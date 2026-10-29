@@ -4,53 +4,60 @@
 
 <div class="container py-5">
 
-    <h1 class="mb-4">
-        {{ player.name }}
-    </h1>
+<h1 class="mb-4">
+    {{ player.name }}
+</h1>
 
-    <div class="card">
-        <div class="card-body">
+<div class="card">
+    <div class="card-body">
 
-            <p>
-                <strong>Position:</strong>
-                {{ player.position }}
-            </p>
+        <p>
+            <strong>Position:</strong>
+            {{ player.position }}
+        </p>
 
-            <p>
-                <strong>NFL Team:</strong>
-                {{ player.nfl_team }}
-            </p>
+        <p>
+            <strong>NFL Team:</strong>
+            {{ player.nfl_team }}
+        </p>
 
-            <p>
-                <strong>Fantasy Points:</strong>
-                {{ player.fantasy_points }}
-            </p>
+        <p>
+            <strong>Fantasy Points:</strong>
+            {{ player.fantasy_points }}
+        </p>
 
-            <p>
-                <strong>Available:</strong>
+        <p>
+            <strong>Available:</strong>
 
-                {% if player.available %}
-                    Yes
-                {% else %}
-                    No
-                {% endif %}
-            </p>
-            {% if user.is_authenticated %}
-            <a
-                href="{% url 'player_edit' player.id %}"
-                class="btn btn-warning">
-                Edit Player
-            </a>
-        {% endif %}
-        
+            {% if player.available %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+        </p>
+        {% if user.is_authenticated %}
         <a
-            href="{% url 'player_list' %}"
-            class="btn btn-secondary">
-            Back to Players
+            href="{% url 'player_edit' player.id %}"
+            class="btn btn-warning">
+            Edit Player
         </a>
 
-        </div>
+        <a
+            href="{% url 'player_delete' player.id %}"
+            class="btn btn-danger">
+            Delete Player
+        </a>
+        
+    {% endif %}
+    
+    <a
+        href="{% url 'player_list' %}"
+        class="btn btn-secondary">
+        Back to Players
+    </a>
+
     </div>
+</div>
 
 </div>
 
