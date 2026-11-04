@@ -236,6 +236,42 @@ def roster_add_player(request, team_id):
     )
 
 @login_required
+def roster_drop_player(request, team_id, roster_id):
+    team = get_object_or_404(
+        FantasyTeam,
+        id=team_id,
+        owner=request.user,
+    )
+
+    roster_entry = get_object_or_404(
+        Roster,
+        id=roster_id,
+        fantasy_team=team,
+    )
+
+    if request.method == "POST":
+        player = roster_entry.player
+
+        roster_entry.delete()
+
+        player.available = True
+        player.save()
+
+        return redirect(
+            "team_roster",
+            team_id=team.id,
+        )
+
+    return render(
+        request,
+        "fantasy/roster_confirm_drop.html",
+        {
+            "team": team,
+            "roster_entry": roster_entry,
+        },
+    )
+
+@login_required
 def player_delete(request, player_id):
     player = get_object_or_404(Player, id=player_id)
 
