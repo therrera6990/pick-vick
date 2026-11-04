@@ -186,6 +186,56 @@ def team_roster(request, team_id):
     )
 
 @login_required
+def roster_add_player(request, team_id):
+    team = get_object_or_404(
+        FantasyTeam,
+        id=team_id,
+        owner=request.user,
+    )
+
+    available_players = Player.objects.filter(
+        available=True,
+        roster_entry__isnull=True,
+    )
+
+    if request.method == "POST":
+        player_id = request.POST.get("player_id")
+        roster_position = request.POST.get(
+            "roster_position",
+            "BENCH",
+        )
+
+        player = get_object_or_404(
+            Player,
+            id=player_id,
+            available=True,
+            roster_entry__isnull=True,
+        )
+
+        Roster.objects.create(
+            fantasy_team=team,
+            player=player,
+            roster_position=roster_position,
+        )
+
+        player.available = False
+        player.save()
+
+        return redirect(
+            "team_roster",
+            team_id=team.id,
+        )
+
+    return render(
+        request,
+        "fantasy/roster_add_player.html",
+        {
+            "team": team,
+            "available_players": available_players,
+        },
+    )
+
+@login_required
 def player_delete(request, player_id):
     player = get_object_or_404(Player, id=player_id)
 

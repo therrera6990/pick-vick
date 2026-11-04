@@ -1,0 +1,96 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="mb-4">
+        Add Player to {{ team.team_name }}
+    </h1>
+
+    {% if available_players %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Player
+                </label>
+
+                <select
+                    name="player_id"
+                    class="form-select"
+                    required>
+
+                    {% for player in available_players %}
+
+                        <option value="{{ player.id }}">
+                            {{ player.name }}
+                            -
+                            {{ player.position }}
+                            -
+                            {{ player.nfl_team }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Roster Position
+                </label>
+
+                <select
+                    name="roster_position"
+                    class="form-select">
+
+                    <option value="STARTER">
+                        Starter
+                    </option>
+
+                    <option value="BENCH">
+                        Bench
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+                Add Player
+            </button>
+
+            <a
+                href="{% url 'team_roster' team.id %}"
+                class="btn btn-secondary">
+                Cancel
+            </a>
+
+        </form>
+
+    {% else %}
+
+        <p>
+            No available players can be added right now.
+        </p>
+
+        <a
+            href="{% url 'team_roster' team.id %}"
+            class="btn btn-secondary">
+            Back to Roster
+        </a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -4,110 +4,115 @@
 
 <div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1>{{ team.team_name }} Roster</h1>
-            <p class="text-muted mb-0">
-                Manage starters and bench players.
-            </p>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>{{ team.team_name }} Roster</h1>
+        <p class="text-muted mb-0">
+            Manage starters and bench players.
+        </p>
+    </div>
+    <a
+    href="{% url 'roster_add_player' team.id %}"
+    class="btn btn-primary mt-3">
+    Add Player
+</a>
 
-        <a
-            href="{% url 'team_detail' team.id %}"
-            class="btn btn-secondary">
-            Back to Team
-        </a>
+    <a
+        href="{% url 'team_detail' team.id %}"
+        class="btn btn-secondary">
+        Back to Team
+    </a>
+</div>
+
+<h2 class="mt-4">Starters</h2>
+
+{% if starters %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Position</th>
+                    <th>NFL Team</th>
+                    <th>Fantasy Points</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for entry in starters %}
+                    <tr>
+                        <td>
+                            {{ entry.player.name }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.position }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.nfl_team }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.fantasy_points }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <h2 class="mt-4">Starters</h2>
+{% else %}
 
-    {% if starters %}
+    <p>No starters assigned yet.</p>
 
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
+{% endif %}
+
+<h2 class="mt-5">Bench</h2>
+
+{% if bench %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Position</th>
+                    <th>NFL Team</th>
+                    <th>Fantasy Points</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for entry in bench %}
                     <tr>
-                        <th>Player</th>
-                        <th>Position</th>
-                        <th>NFL Team</th>
-                        <th>Fantasy Points</th>
+                        <td>
+                            {{ entry.player.name }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.position }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.nfl_team }}
+                        </td>
+
+                        <td>
+                            {{ entry.player.fantasy_points }}
+                        </td>
                     </tr>
-                </thead>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-                <tbody>
-                    {% for entry in starters %}
-                        <tr>
-                            <td>
-                                {{ entry.player.name }}
-                            </td>
+{% else %}
 
-                            <td>
-                                {{ entry.player.position }}
-                            </td>
+    <p>No bench players assigned yet.</p>
 
-                            <td>
-                                {{ entry.player.nfl_team }}
-                            </td>
-
-                            <td>
-                                {{ entry.player.fantasy_points }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-    {% else %}
-
-        <p>No starters assigned yet.</p>
-
-    {% endif %}
-
-    <h2 class="mt-5">Bench</h2>
-
-    {% if bench %}
-
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Position</th>
-                        <th>NFL Team</th>
-                        <th>Fantasy Points</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for entry in bench %}
-                        <tr>
-                            <td>
-                                {{ entry.player.name }}
-                            </td>
-
-                            <td>
-                                {{ entry.player.position }}
-                            </td>
-
-                            <td>
-                                {{ entry.player.nfl_team }}
-                            </td>
-
-                            <td>
-                                {{ entry.player.fantasy_points }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-    {% else %}
-
-        <p>No bench players assigned yet.</p>
-
-    {% endif %}
+{% endif %}
 
 </div>
 
