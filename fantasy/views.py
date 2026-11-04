@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import FantasyTeamForm, PlayerForm, RegisterForm
 from .models import FantasyTeam
-from .models import FantasyTeam, Player
+from .models import FantasyTeam, Player, Roster
 
 
 def home(request):
@@ -153,6 +153,36 @@ def team_delete(request, team_id):
         request,
         "fantasy/team_confirm_delete.html",
         {"team": team},
+    )
+
+@login_required
+def team_roster(request, team_id):
+    team = get_object_or_404(
+        FantasyTeam,
+        id=team_id,
+        owner=request.user,
+    )
+
+    roster_entries = Roster.objects.filter(
+        fantasy_team=team
+    ).select_related("player")
+
+    starters = roster_entries.filter(
+        roster_position="STARTER"
+    )
+
+    bench = roster_entries.filter(
+        roster_position="BENCH"
+    )
+
+    return render(
+        request,
+        "fantasy/team_roster.html",
+        {
+            "team": team,
+            "starters": starters,
+            "bench": bench,
+        },
     )
 
 @login_required
