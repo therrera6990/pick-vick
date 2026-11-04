@@ -75,6 +75,12 @@ urlpatterns = [
     ),
 
     path(
+    "teams/<int:team_id>/roster/<int:roster_id>/toggle/",
+    views.roster_toggle_position,
+    name="roster_toggle_position",
+),
+
+    path(
     "teams/<int:team_id>/roster/<int:roster_id>/drop/",
     views.roster_drop_player,
     name="roster_drop_player",

@@ -272,6 +272,33 @@ def roster_drop_player(request, team_id, roster_id):
     )
 
 @login_required
+def roster_toggle_position(request, team_id, roster_id):
+    team = get_object_or_404(
+        FantasyTeam,
+        id=team_id,
+        owner=request.user,
+    )
+
+    roster_entry = get_object_or_404(
+        Roster,
+        id=roster_id,
+        fantasy_team=team,
+    )
+
+    if request.method == "POST":
+        if roster_entry.roster_position == "STARTER":
+            roster_entry.roster_position = "BENCH"
+        else:
+            roster_entry.roster_position = "STARTER"
+
+        roster_entry.save()
+
+    return redirect(
+        "team_roster",
+        team_id=team.id,
+    )
+
+@login_required
 def player_delete(request, player_id):
     player = get_object_or_404(Player, id=player_id)
 
