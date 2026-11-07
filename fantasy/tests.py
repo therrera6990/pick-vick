@@ -241,6 +241,135 @@ class RosterTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
+class RosterTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="rosteruser",
+            password="testpass123",
+        )
+
+        self.league = League.objects.create(
+            name="Test League",
+            season=2026,
+            current_week=1,
+        )
+
+        self.team = FantasyTeam.objects.create(
+            league=self.league,
+            owner=self.user,
+            team_name="Roster Test Team",
+        )
+
+        self.player = Player.objects.create(
+            name="Test Player",
+            position="RB",
+            nfl_team="TEST",
+            fantasy_points=10.00,
+            available=True,
+        )
+
+    def test_roster_page_loads_for_owner(self):
+        self.client.login(
+            username="rosteruser",
+            password="testpass123",
+        )
+
+        response = self.client.get(
+            reverse(
+                "team_roster",
+                args=[self.team.id],
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_user_can_add_player_to_roster(self):
+        self.client.login(
+            username="rosteruser",
+            password="testpass123",
+        )
+
+        response = self.client.post(
+            reverse(
+                "roster_add_player",
+                args=[self.team.id],
+            ),
+            {
+                "player_id": self.player.id,
+                "roster_position": "BENCH",
+            },
+        )
+
+        self.assertEqual(Roster.objects.count(), 1)
+
+        self.player.refresh_from_db()
+        self.assertFalse(self.player.available)
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_logged_in_user_can_toggle_roster_position(self):
+        self.client.login(
+            username="rosteruser",
+            password="testpass123",
+        )
+
+        roster_entry = Roster.objects.create(
+            fantasy_team=self.team,
+            player=self.player,
+            roster_position="BENCH",
+        )
+
+        response = self.client.post(
+            reverse(
+                "roster_toggle_position",
+                args=[
+                    self.team.id,
+                    roster_entry.id,
+                ],
+            )
+        )
+
+        roster_entry.refresh_from_db()
+
+        self.assertEqual(
+            roster_entry.roster_position,
+            "STARTER",
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_logged_in_user_can_drop_player(self):
+        self.client.login(
+            username="rosteruser",
+            password="testpass123",
+        )
+
+        self.player.available = False
+        self.player.save()
+
+        roster_entry = Roster.objects.create(
+            fantasy_team=self.team,
+            player=self.player,
+            roster_position="STARTER",
+        )
+
+        response = self.client.post(
+            reverse(
+                "roster_drop_player",
+                args=[
+                    self.team.id,
+                    roster_entry.id,
+                ],
+            )
+        )
+
+        self.assertEqual(Roster.objects.count(), 0)
+
+        self.player.refresh_from_db()
+        self.assertTrue(self.player.available)
+
+        self.assertEqual(response.status_code, 302)
+
         
 class FantasyTeamTests(TestCase):
     def setUp(self):
