@@ -75,6 +75,12 @@ urlpatterns = [
     ),
 
     path(
+        "matchups/",
+        views.matchup_list,
+        name="matchup_list",
+    ),
+
+    path(
     "teams/<int:team_id>/roster/<int:roster_id>/toggle/",
     views.roster_toggle_position,
     name="roster_toggle_position",

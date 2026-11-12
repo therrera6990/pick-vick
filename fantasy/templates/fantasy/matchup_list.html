@@ -1,0 +1,83 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Weekly Matchups</h1>
+        <p class="text-muted mb-0">
+            View weekly fantasy football matchups and scores.
+        </p>
+    </div>
+</div>
+
+{% if matchups %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Home Team</th>
+                    <th>Home Score</th>
+                    <th>Away Team</th>
+                    <th>Away Score</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for matchup in matchups %}
+
+                    <tr>
+                        <td>
+                            {{ matchup.week }}
+                        </td>
+
+                        <td>
+                            {{ matchup.home_team.team_name }}
+                        </td>
+
+                        <td>
+                            {{ matchup.home_score }}
+                        </td>
+
+                        <td>
+                            {{ matchup.away_team.team_name }}
+                        </td>
+
+                        <td>
+                            {{ matchup.away_score }}
+                        </td>
+
+                        <td>
+                            {% if matchup.completed %}
+                                Completed
+                            {% else %}
+                                Not Completed
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+{% else %}
+
+    <div class="alert alert-secondary">
+        No matchups have been created yet.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

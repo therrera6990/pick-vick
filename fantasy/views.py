@@ -3,8 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import FantasyTeamForm, PlayerForm, RegisterForm
-from .models import FantasyTeam
-from .models import FantasyTeam, Player, Roster
+from .models import FantasyTeam, League, Matchup, Player, Roster
 
 
 def home(request):
@@ -94,6 +93,19 @@ def player_detail(request, player_id):
         {"player": player},
     )
 
+def matchup_list(request):
+    matchups = Matchup.objects.select_related(
+        "home_team",
+        "away_team",
+    ).order_by("week", "id")
+
+    return render(
+        request,
+        "fantasy/matchup_list.html",
+        {
+            "matchups": matchups,
+        },
+    )
 
 @login_required
 def team_create(request):
