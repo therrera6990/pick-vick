@@ -81,6 +81,12 @@ urlpatterns = [
     ),
 
     path(
+        "matchups/<int:matchup_id>/score/",
+        views.matchup_score_edit,
+        name="matchup_score_edit",
+    ),
+
+    path(
         "matchups/",
         views.matchup_list,
         name="matchup_list",

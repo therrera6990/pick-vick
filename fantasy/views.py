@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import FantasyTeamForm, MatchupForm, PlayerForm, RegisterForm
+from .forms import FantasyTeamForm, MatchupForm, MatchupScoreForm, PlayerForm, RegisterForm
 from .models import FantasyTeam, League, Matchup, Player, Roster
 
 
@@ -124,6 +124,37 @@ def matchup_create(request):
         "fantasy/matchup_form.html",
         {
             "form": form,
+        },
+    )
+
+@login_required
+def matchup_score_edit(request, matchup_id):
+    matchup = get_object_or_404(
+        Matchup,
+        id=matchup_id,
+    )
+
+    if request.method == "POST":
+        form = MatchupScoreForm(
+            request.POST,
+            instance=matchup,
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("matchup_list")
+
+    else:
+        form = MatchupScoreForm(
+            instance=matchup,
+        )
+
+    return render(
+        request,
+        "fantasy/matchup_score_form.html",
+        {
+            "form": form,
+            "matchup": matchup,
         },
     )
 

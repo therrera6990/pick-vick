@@ -38,6 +38,15 @@ class MatchupForm(forms.ModelForm):
             )
         
         return cleaned_data
+    
+class MatchupScoreForm(forms.ModelForm):
+    class Meta:
+        model = Matchup
+        fields = [
+            "home_score",
+            "away_score",
+            "completed",
+        ]
 
 
 class FantasyTeamForm(forms.ModelForm):

@@ -1,0 +1,52 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h1 class="mb-3">
+                    Update Matchup Score
+                </h1>
+
+                <p class="text-muted">
+                    Week {{ matchup.week }}:
+                    {{ matchup.home_team.team_name }}
+                    vs.
+                    {{ matchup.away_team.team_name }}
+                </p>
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Save Scores
+                    </button>
+
+                    <a
+                        href="{% url 'matchup_list' %}"
+                        class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
