@@ -26,77 +26,100 @@
 
 {% if matchups %}
 
-<div class="table-responsive">
-    <table class="table table-striped align-middle">
+    <div class="table-responsive">
 
-        <thead>
-            <tr>
-                <th>Week</th>
-                <th>Home Team</th>
-                <th>Home Score</th>
-                <th>Away Team</th>
-                <th>Away Score</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+        <table class="table table-striped align-middle">
 
-        <tbody>
-
-            {% for matchup in matchups %}
-
+            <thead>
                 <tr>
-                    <td>
-                        {{ matchup.week }}
-                    </td>
-
-                    <td>
-                        {{ matchup.home_team.team_name }}
-                    </td>
-
-                    <td>
-                        {{ matchup.home_score }}
-                    </td>
-
-                    <td>
-                        {{ matchup.away_team.team_name }}
-                    </td>
-
-                    <td>
-                        {{ matchup.away_score }}
-                    </td>
-
-                    <td>
-                        {% if matchup.completed %}
-                            Completed
-                        {% else %}
-                            Not Completed
-                        {% endif %}
-                    </td>
-
-                    <td>
-                        {% if user.is_authenticated %}
-                        <a
-                            href="{% url 'matchup_score_edit' matchup.id %}"
-                            class="btn btn-sm btn-outline-primary">
-                            Update Score
-                        </a>
-                    {% endif %}
-                    </td>
+                    <th>Week</th>
+                    <th>Home Team</th>
+                    <th>Home Score</th>
+                    <th>Away Team</th>
+                    <th>Away Score</th>
+                    <th>Status</th>
+                    <th>Winner</th>
+                    <th>Actions</th>
                 </tr>
+            </thead>
 
-            {% endfor %}
+            <tbody>
 
-        </tbody>
+                {% for matchup in matchups %}
 
-    </table>
-</div>
+                    <tr>
+
+                        <td>
+                            {{ matchup.week }}
+                        </td>
+
+                        <td>
+                            {{ matchup.home_team.team_name }}
+                        </td>
+
+                        <td>
+                            {{ matchup.home_score }}
+                        </td>
+
+                        <td>
+                            {{ matchup.away_team.team_name }}
+                        </td>
+
+                        <td>
+                            {{ matchup.away_score }}
+                        </td>
+
+                        <td>
+                            {% if matchup.completed %}
+                                Completed
+                            {% else %}
+                                Not Completed
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if matchup.completed %}
+
+                                {% if matchup.home_score > matchup.away_score %}
+                                    {{ matchup.home_team.team_name }}
+
+                                {% elif matchup.away_score > matchup.home_score %}
+                                    {{ matchup.away_team.team_name }}
+
+                                {% else %}
+                                    Tie
+                                {% endif %}
+
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if user.is_authenticated %}
+                                <a
+                                    href="{% url 'matchup_score_edit' matchup.id %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    Update Score
+                                </a>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 {% else %}
 
-<div class="alert alert-secondary">
-    No matchups have been created yet.
-</div>
+    <div class="alert alert-secondary">
+        No matchups have been created yet.
+    </div>
 
 {% endif %}
 

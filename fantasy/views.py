@@ -458,13 +458,7 @@ def player_create(request):
     )
 
 def standings(request):
-    teams = list(
-        FantasyTeam.objects.all().order_by(
-            "-wins",
-            "-fantasy_points",
-            "team_name",
-        )
-    )
+    teams = list(FantasyTeam.objects.all())
 
     for team in teams:
         total_games = team.wins + team.losses
@@ -473,6 +467,14 @@ def standings(request):
             team.winning_percentage = team.wins / total_games
         else:
             team.winning_percentage = 0
+
+    teams.sort(
+        key=lambda team: (
+            -team.winning_percentage,
+            -float(team.fantasy_points),
+            team.team_name.lower(),
+        )
+    )
 
     return render(
         request,
