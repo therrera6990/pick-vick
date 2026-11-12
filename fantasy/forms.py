@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import FantasyTeam, Player
+from .models import FantasyTeam, Matchup, Player
 
 
 class RegisterForm(UserCreationForm):
@@ -16,6 +16,28 @@ class RegisterForm(UserCreationForm):
             "password1",
             "password2",
         ]
+
+class MatchupForm(forms.ModelForm):
+    class Meta:
+        model = Matchup
+        fields = [
+            "week",
+            "home_team",
+            "away_team",
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        home_team = cleaned_data.get("home_team")
+        away_team = cleaned_data.get("away_team")
+
+        if home_team and away_team and home_team == away_team:
+            raise forms.ValidationError(
+                "A team cannot play against itself."
+            )
+        
+        return cleaned_data
 
 
 class FantasyTeamForm(forms.ModelForm):

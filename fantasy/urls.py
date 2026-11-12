@@ -75,6 +75,12 @@ urlpatterns = [
     ),
 
     path(
+        "matchups/create/",
+        views.matchup_create,
+        name="matchup_create",
+    ),
+
+    path(
         "matchups/",
         views.matchup_list,
         name="matchup_list",
