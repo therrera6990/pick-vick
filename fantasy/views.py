@@ -135,13 +135,52 @@ def matchup_score_edit(request, matchup_id):
     )
 
     if request.method == "POST":
+        # Save the old matchup values before changing anything.
+        old_completed = matchup.completed
+        old_home_score = matchup.home_score
+        old_away_score = matchup.away_score
+
         form = MatchupScoreForm(
             request.POST,
             instance=matchup,
         )
 
         if form.is_valid():
-            form.save()
+            home_team = matchup.home_team
+            away_team = matchup.away_team
+
+            # If this matchup was already completed,
+            # remove its old result before applying the new one.
+            if old_completed:
+                if old_home_score > old_away_score:
+                    home_team.wins -= 1
+                    away_team.losses -= 1
+
+                elif old_away_score > old_home_score:
+                    away_team.wins -= 1
+                    home_team.losses -= 1
+
+                home_team.fantasy_points -= old_home_score
+                away_team.fantasy_points -= old_away_score
+
+            matchup = form.save()
+
+            # Apply the new result if the matchup is completed.
+            if matchup.completed:
+                if matchup.home_score > matchup.away_score:
+                    home_team.wins += 1
+                    away_team.losses += 1
+
+                elif matchup.away_score > matchup.home_score:
+                    away_team.wins += 1
+                    home_team.losses += 1
+
+                home_team.fantasy_points += matchup.home_score
+                away_team.fantasy_points += matchup.away_score
+
+            home_team.save()
+            away_team.save()
+
             return redirect("matchup_list")
 
     else:
