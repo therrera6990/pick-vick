@@ -4,111 +4,170 @@
 
 <div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Players</h1>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Players</h1>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Players</h1>
-
-        <form method="get" class="row g-3 mb-4">
-
-            <div class="col-md-6">
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Search players by name..."
-                    value="{{ search }}"
-                >
-            </div>
-        
-            <div class="col-md-4">
-                <select
-                    name="position"
-                    class="form-select"
-                >
-                    <option value="">All Positions</option>
-        
-                    {% for value, label in positions %}
-                        <option
-                            value="{{ value }}"
-                            {% if position == value %}selected{% endif %}
-                        >
-                            {{ value }} - {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        
-            <div class="col-md-2">
-                <button
-                    type="submit"
-                    class="btn btn-primary w-100">
-                    Search
-                </button>
-            </div>
-        
-        </form>
-    
-        {% if user.is_authenticated %}
-            <a
-                href="{% url 'player_create' %}"
-                class="btn btn-primary">
-                Add Player
-            </a>
-        {% endif %}
-    </div>
-
-    {% if players %}
-
-        <div class="table-responsive">
-            <table class="table table-striped">
-
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>NFL Team</th>
-                        <th>Fantasy Points</th>
-                        <th>Available</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for player in players %}
-
-                        <tr>
-                            <td>
-                                <a href="{% url 'player_detail' player.id %}">
-                                    {{ player.name }}
-                                </a>
-                            </td>
-                            <td>{{ player.position }}</td>
-                            <td>{{ player.nfl_team }}</td>
-                            <td>{{ player.fantasy_points }}</td>
-                            <td>
-                                {% if player.available %}
-                                    Yes
-                                {% else %}
-                                    No
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-        </div>
-
-    {% else %}
-
-        <p>No players have been added yet.</p>
-
+    {% if user.is_authenticated %}
+        <a
+            href="{% url 'player_create' %}"
+            class="btn btn-primary">
+            Add Player
+        </a>
     {% endif %}
+</div>
+
+<form method="get" class="row g-3 mb-3">
+
+    <div class="col-md-3">
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search by player name..."
+            value="{{ search }}"
+        >
+    </div>
+
+    <div class="col-md-2">
+        <select
+            name="position"
+            class="form-select"
+        >
+            <option value="">All Positions</option>
+
+            {% for value, label in positions %}
+                <option
+                    value="{{ value }}"
+                    {% if position == value %}selected{% endif %}
+                >
+                    {{ value }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select
+            name="nfl_team"
+            class="form-select"
+        >
+            <option value="">All NFL Teams</option>
+
+            {% for team in nfl_teams %}
+                <option
+                    value="{{ team }}"
+                    {% if nfl_team == team %}selected{% endif %}
+                >
+                    {{ team }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select
+            name="availability"
+            class="form-select"
+        >
+            <option value="">All Availability</option>
+
+            <option
+                value="available"
+                {% if availability == "available" %}selected{% endif %}
+            >
+                Available
+            </option>
+
+            <option
+                value="unavailable"
+                {% if availability == "unavailable" %}selected{% endif %}
+            >
+                Unavailable
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button
+            type="submit"
+            class="btn btn-primary w-100">
+            Search
+        </button>
+    </div>
+
+</form>
+
+{% if search or position or nfl_team or availability %}
+    <div class="mb-4">
+        <a
+            href="{% url 'player_list' %}"
+            class="btn btn-sm btn-outline-secondary">
+            Clear Filters
+        </a>
+    </div>
+{% endif %}
+
+{% if players %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>NFL Team</th>
+                    <th>Fantasy Points</th>
+                    <th>Available</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for player in players %}
+
+                    <tr>
+                        <td>
+                            <a href="{% url 'player_detail' player.id %}">
+                                {{ player.name }}
+                            </a>
+                        </td>
+
+                        <td>
+                            {{ player.position }}
+                        </td>
+
+                        <td>
+                            {{ player.nfl_team }}
+                        </td>
+
+                        <td>
+                            {{ player.fantasy_points }}
+                        </td>
+
+                        <td>
+                            {% if player.available %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+{% else %}
+
+    <div class="alert alert-secondary">
+        No players match your current search or filters.
+    </div>
+
+{% endif %}
 
 </div>
 

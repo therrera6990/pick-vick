@@ -41,8 +41,10 @@ def team_list(request):
 def player_list(request):
     players = Player.objects.all()
 
-    search=request.GET.get("search", "")
+    search = request.GET.get("search", "")
     position = request.GET.get("position", "")
+    nfl_team = request.GET.get("nfl_team", "")
+    availability = request.GET.get("availability", "")
 
     if search:
         players = players.filter(name__icontains=search)
@@ -50,11 +52,31 @@ def player_list(request):
     if position:
         players = players.filter(position=position)
 
+    if nfl_team:
+        players = players.filter(nfl_team__iexact=nfl_team)
+
+    if availability == "available":
+        players = players.filter(available=True)
+
+    elif availability == "unavailable":
+        players = players.filter(available=False)
+
+    nfl_teams = (
+        Player.objects
+        .exclude(nfl_team="")
+        .values_list("nfl_team", flat=True)
+        .distinct()
+        .order_by("nfl_team")
+    )
+
     context = {
         "players": players,
         "search": search,
         "position": position,
+        "nfl_team": nfl_team,
+        "availability": availability,
         "positions": Player.POSITION_CHOICES,
+        "nfl_teams": nfl_teams,
     }
 
     return render(
