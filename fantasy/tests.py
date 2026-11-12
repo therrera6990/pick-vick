@@ -46,6 +46,7 @@ class PlayerTests(TestCase):
                 args=[self.player.id],
             )
         )
+
         self.assertEqual(response.status_code, 200)
 
     def test_logged_in_user_can_create_player(self):
@@ -91,9 +92,10 @@ class PlayerTests(TestCase):
         self.player.refresh_from_db()
 
         self.assertEqual(
-            self.player.fantasy_points,
+            float(self.player.fantasy_points),
             30.00,
         )
+
         self.assertEqual(response.status_code, 302)
 
     def test_logged_in_user_can_delete_player(self):
@@ -112,6 +114,64 @@ class PlayerTests(TestCase):
         self.assertEqual(Player.objects.count(), 0)
         self.assertEqual(response.status_code, 302)
 
+    def test_search_players_by_name(self):
+        response = self.client.get(
+            reverse("player_list"),
+            {
+                "search": "Josh",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Josh Allen")
+
+    def test_filter_players_by_position(self):
+        response = self.client.get(
+            reverse("player_list"),
+            {
+                "position": "QB",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Josh Allen")
+
+    def test_filter_players_by_nfl_team(self):
+        response = self.client.get(
+            reverse("player_list"),
+            {
+                "nfl_team": "BUF",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Josh Allen")
+
+    def test_filter_players_by_availability(self):
+        response = self.client.get(
+            reverse("player_list"),
+            {
+                "availability": "available",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Josh Allen")
+
+    def test_combined_player_filters(self):
+        response = self.client.get(
+            reverse("player_list"),
+            {
+                "search": "Josh",
+                "position": "QB",
+                "nfl_team": "BUF",
+                "availability": "available",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Josh Allen")
+    
 class RosterTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
