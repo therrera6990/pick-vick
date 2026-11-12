@@ -457,6 +457,30 @@ def player_create(request):
         },
     )
 
+def standings(request):
+    teams = list(
+        FantasyTeam.objects.all().order_by(
+            "-wins",
+            "-fantasy_points",
+            "team_name",
+        )
+    )
+
+    for team in teams:
+        total_games = team.wins + team.losses
+
+        if total_games > 0:
+            team.winning_percentage = team.wins / total_games
+        else:
+            team.winning_percentage = 0
+
+    return render(
+        request,
+        "fantasy/standings.html",
+        {
+            "teams": teams,
+        },
+    )
 @login_required
 def player_edit(request, player_id):
     player = get_object_or_404(Player, id=player_id)

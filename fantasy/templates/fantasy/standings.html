@@ -1,0 +1,78 @@
+{% extends "fantasy/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="mb-4">
+    <h1>Standings</h1>
+
+    <p class="text-muted">
+        Current fantasy league standings.
+    </p>
+</div>
+
+{% if teams %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team</th>
+                    <th>Wins</th>
+                    <th>Losses</th>
+                    <th>Win %</th>
+                    <th>Fantasy Points</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for team in teams %}
+
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+                        <td>
+                            {{ team.team_name }}
+                        </td>
+
+                        <td>
+                            {{ team.wins }}
+                        </td>
+
+                        <td>
+                            {{ team.losses }}
+                        </td>
+
+                        <td>
+                            {{ team.winning_percentage|floatformat:3 }}
+                        </td>
+
+                        <td>
+                            {{ team.fantasy_points|floatformat:2 }}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+{% else %}
+
+    <div class="alert alert-secondary">
+        No fantasy teams have been created yet.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
