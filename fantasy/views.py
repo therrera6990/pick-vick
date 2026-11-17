@@ -358,6 +358,13 @@ def roster_add_player(request, team_id):
         player.available = False
         player.save()
 
+        Transaction.objects.create(
+            fantasy_team=team,
+            player=player,
+            transaction_type="ADD",
+            notes="Player added to roster.",
+        )
+
         return redirect(
             "team_roster",
             team_id=team.id,
@@ -388,6 +395,13 @@ def roster_drop_player(request, team_id, roster_id):
 
     if request.method == "POST":
         player = roster_entry.player
+
+        Transaction.objects.create(
+            fantasy_team=team,
+            player=player,
+            transaction_type="DROP",
+            notes="Player dropped from roster.",
+        )
 
         roster_entry.delete()
 
