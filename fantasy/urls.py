@@ -4,126 +4,126 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.home, name="home"),
+path("", views.home, name="home"),
 
-    path("register/", views.register, name="register"),
+path("register/", views.register, name="register"),
 
-    path("players/", views.player_list, name="player_list"),
-
-    path(
-        "login/",
-        auth_views.LoginView.as_view(
-            template_name="fantasy/login.html"
-        ),
-        name="login",
-    ),
-
-    path(
-        "logout/",
-        auth_views.LogoutView.as_view(),
-        name="logout",
-    ),
-
-    path("teams/", views.team_list, name="team_list"),
-
-    path(
-        "players/create/",
-         views.player_create,
-          name="player_create",
-    ),
-
-    path(
-        "teams/create/",
-        views.team_create,
-        name="team_create",
-    ),
-
-    path(
-        "teams/<int:team_id>/",
-        views.team_detail,
-        name="team_detail",
-    ),
-
-    path(
-         "players/<int:player_id>/",
-         views.player_detail,
-         name="player_detail",
-    ),
-
-    path(
-        "teams/<int:team_id>/edit/",
-        views.team_edit,
-        name="team_edit",
-    ),
-
-    path(
-        "players/<int:player_id>/edit/",
-        views.player_edit,
-        name="player_edit",
-    ),
-
-    path(
-        "players/<int:player_id>/delete/",
-        views.player_delete,
-        name="player_delete",
-    ),
-
-    path(
-        "teams/<int:team_id>/roster/",
-        views.team_roster,
-        name="team_roster",
-    ),
-
-    path(
-        "matchups/create/",
-        views.matchup_create,
-        name="matchup_create",
-    ),
-
-    path(
-        "matchups/<int:matchup_id>/score/",
-        views.matchup_score_edit,
-        name="matchup_score_edit",
-    ),
-
-    path(
-        "matchups/",
-        views.matchup_list,
-        name="matchup_list",
-    ),
+path("players/", views.player_list, name="player_list"),
 
 path(
-    "transactions/",
-    views.transaction_list,
-    name="transaction_list",
-),
-    path(
-    "standings/",
-    views.standings,
-    name="standings",
-),
-
-    path(
-    "teams/<int:team_id>/roster/<int:roster_id>/toggle/",
-    views.roster_toggle_position,
-    name="roster_toggle_position",
-),
-
-    path(
-    "teams/<int:team_id>/roster/<int:roster_id>/drop/",
-    views.roster_drop_player,
-    name="roster_drop_player",
-),
-
-    path(
-        "teams/<int:team_id>/roster/add/",
-        views.roster_add_player,
-        name="roster_add_player",
+    "login/",
+    auth_views.LoginView.as_view(
+        template_name="fantasy/login.html"
     ),
-    
-    path(
-        "teams/<int:team_id>/delete/",
-        views.team_delete,
-        name="team_delete",
-    ),
+    name="login",
+),
+
+path(
+    "logout/",
+    auth_views.LogoutView.as_view(),
+    name="logout",
+),
+
+path("teams/", views.team_list, name="team_list"),
+
+path(
+    "players/create/",
+        views.player_create,
+        name="player_create",
+),
+
+path(
+    "teams/create/",
+    views.team_create,
+    name="team_create",
+),
+
+path(
+    "teams/<int:team_id>/",
+    views.team_detail,
+    name="team_detail",
+),
+
+path(
+        "players/<int:player_id>/",
+        views.player_detail,
+        name="player_detail",
+),
+
+path(
+    "teams/<int:team_id>/edit/",
+    views.team_edit,
+    name="team_edit",
+),
+
+path(
+    "players/<int:player_id>/edit/",
+    views.player_edit,
+    name="player_edit",
+),
+
+path(
+    "players/<int:player_id>/delete/",
+    views.player_delete,
+    name="player_delete",
+),
+
+path(
+    "teams/<int:team_id>/roster/",
+    views.team_roster,
+    name="team_roster",
+),
+
+path(
+    "matchups/create/",
+    views.matchup_create,
+    name="matchup_create",
+),
+
+path(
+    "matchups/<int:matchup_id>/score/",
+    views.matchup_score_edit,
+    name="matchup_score_edit",
+),
+
+path(
+    "matchups/",
+    views.matchup_list,
+    name="matchup_list",
+),
+
+path(
+"transactions/",
+views.transaction_list,
+name="transaction_list",
+),
+path(
+"standings/",
+views.standings,
+name="standings",
+),
+
+path(
+"teams/<int:team_id>/roster/<int:roster_id>/toggle/",
+views.roster_toggle_position,
+name="roster_toggle_position",
+),
+
+path(
+"teams/<int:team_id>/roster/<int:roster_id>/drop/",
+views.roster_drop_player,
+name="roster_drop_player",
+),
+
+path(
+    "teams/<int:team_id>/roster/add/",
+    views.roster_add_player,
+    name="roster_add_player",
+),
+
+path(
+    "teams/<int:team_id>/delete/",
+    views.team_delete,
+    name="team_delete",
+),
 ]
