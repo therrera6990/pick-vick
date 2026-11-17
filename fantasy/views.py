@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import FantasyTeamForm, MatchupForm, MatchupScoreForm, PlayerForm, RegisterForm
-from .models import FantasyTeam, League, Matchup, Player, Roster
+from .models import FantasyTeam, League, Matchup, Player, Roster, Transaction
 
 
 def home(request):
@@ -27,6 +27,19 @@ def register(request):
         {"form": form},
     )
 
+def transaction_list(request):
+    transactions = Transaction.objects.select_related(
+        "fantasy_team",
+        "player",
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "fantasy/transaction_list.html",
+        {
+            "transactions": transactions,
+        },
+    )
 
 def team_list(request):
     teams = FantasyTeam.objects.all()

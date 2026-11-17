@@ -92,6 +92,11 @@ urlpatterns = [
         name="matchup_list",
     ),
 
+path(
+    "transactions/",
+    views.transaction_list,
+    name="transaction_list",
+),
     path(
     "standings/",
     views.standings,
