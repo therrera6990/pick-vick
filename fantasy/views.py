@@ -7,7 +7,51 @@ from .models import FantasyTeam, League, Matchup, Player, Roster, Transaction
 
 
 def home(request):
-    return render(request, "fantasy/home.html")
+    context = {}
+
+    if request.user.is_authenticated:
+        recent_transactions = (
+            Transaction.objects
+            .select_related("fantasy_team", "player")
+            .order_by("-created_at")[:5]
+        )
+
+        recent_matchups = (
+            Matchup.objects
+            .select_related("home_team", "away_team")
+            .order_by("-created_at")[:5]
+        )
+
+        teams= list(FantasyTeam.objects.all())
+
+        for team in teams:
+            total_games = team.wins + team.losses
+
+            if total_games > 0:
+                team.winning_percentage = team.wins / total_games
+
+            else:
+                team.winning_percantage = 0
+
+        teams.sort(
+            key=lambda team: (
+                -team.winning_percentage,
+                -float(team.fantasy_points),
+                team.team_name.lower()
+            )
+        )
+
+        context = {
+            "recent_transactions": recent_transactions,
+            "recent_matchups": recent_matchups,
+            "standings": teams[:5],
+        }
+
+    return render(
+        request,
+        "fantasy/home.html",
+        context,
+    )
 
 
 def register(request):

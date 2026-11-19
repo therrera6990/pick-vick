@@ -2,9 +2,268 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">League Dashboard</h1>
+
+        <p class="text-muted">
+            Welcome back, {{ user.username }}.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Recent Transactions -->
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h3 class="h5 mb-0">
+                            Recent Transactions
+                        </h3>
+
+                        <a
+                            href="{% url 'transaction_list' %}"
+                            class="btn btn-sm btn-outline-primary">
+                            View All
+                        </a>
+
+                    </div>
+
+                    {% if recent_transactions %}
+
+                        <div class="table-responsive">
+
+                            <table class="table table-sm align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>Team</th>
+                                        <th>Player</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for transaction in recent_transactions %}
+
+                                        <tr>
+                                            <td>
+                                                {{ transaction.fantasy_team.team_name }}
+                                            </td>
+
+                                            <td>
+                                                {{ transaction.player.name }}
+                                            </td>
+
+                                            <td>
+                                                {{ transaction.get_transaction_type_display }}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="text-muted mb-0">
+                            No recent transactions.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Recent Matchups -->
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h3 class="h5 mb-0">
+                            Recent Matchups
+                        </h3>
+
+                        <a
+                            href="{% url 'matchup_list' %}"
+                            class="btn btn-sm btn-outline-primary">
+                            View All
+                        </a>
+
+                    </div>
+
+                    {% if recent_matchups %}
+
+                        <div class="table-responsive">
+
+                            <table class="table table-sm align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>Week</th>
+                                        <th>Home</th>
+                                        <th>Away</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for matchup in recent_matchups %}
+
+                                        <tr>
+                                            <td>
+                                                {{ matchup.week }}
+                                            </td>
+
+                                            <td>
+                                                {{ matchup.home_team.team_name }}
+                                            </td>
+
+                                            <td>
+                                                {{ matchup.away_team.team_name }}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="text-muted mb-0">
+                            No recent matchups.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Current Standings -->
+    <div class="card shadow-sm mt-4">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h3 class="h5 mb-0">
+                    Current Standings
+                </h3>
+
+                <a
+                    href="{% url 'standings' %}"
+                    class="btn btn-sm btn-outline-primary">
+                    View Full Standings
+                </a>
+
+            </div>
+
+            {% if standings %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Team</th>
+                                <th>Wins</th>
+                                <th>Losses</th>
+                                <th>Win %</th>
+                                <th>Fantasy Points</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for team in standings %}
+
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+
+                                    <td>
+                                        {{ team.team_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ team.wins }}
+                                    </td>
+
+                                    <td>
+                                        {{ team.losses }}
+                                    </td>
+
+                                    <td>
+                                        {{ team.winning_percentage|floatformat:3 }}
+                                    </td>
+
+                                    <td>
+                                        {{ team.fantasy_points|floatformat:2 }}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted mb-0">
+                    No standings are available yet.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<!-- Logged-Out Landing Page -->
 <div class="container text-center py-5">
 
-    <h1 class="display-3 fw-bold">Pick Vick</h1>
+    <h1 class="display-3 fw-bold">
+        Pick Vick
+    </h1>
 
     <p class="lead">
         Fantasy Football League Manager
@@ -15,41 +274,61 @@
         standings, and transactions.
     </p>
 
-    <a href="#" class="btn btn-primary btn-lg me-2">
-        View League
+    <a
+        href="{% url 'login' %}"
+        class="btn btn-primary btn-lg me-2">
+        Login
     </a>
 
-    <a href="#" class="btn btn-outline-primary btn-lg">
-        View Teams
+    <a
+        href="{% url 'register' %}"
+        class="btn btn-outline-primary btn-lg">
+        Register
     </a>
 
 </div>
 
 <div class="container">
+
     <div class="row text-center g-3">
 
         <div class="col-md-4">
-            <div class="card p-4 h-100">
+
+            <div class="card p-4 h-100 shadow-sm">
                 <h3>2026</h3>
-                <p class="mb-0">Current Season</p>
+                <p class="mb-0">
+                    Current Season
+                </p>
             </div>
+
         </div>
 
         <div class="col-md-4">
-            <div class="card p-4 h-100">
+
+            <div class="card p-4 h-100 shadow-sm">
                 <h3>Week 1</h3>
-                <p class="mb-0">Current Week</p>
+                <p class="mb-0">
+                    Current Week
+                </p>
             </div>
+
         </div>
 
         <div class="col-md-4">
-            <div class="card p-4 h-100">
+
+            <div class="card p-4 h-100 shadow-sm">
                 <h3>Fantasy Teams</h3>
-                <p class="mb-0">Build and manage your league</p>
+                <p class="mb-0">
+                    Build and manage your league
+                </p>
             </div>
+
         </div>
 
     </div>
+
 </div>
+
+{% endif %}
 
 {% endblock %}
