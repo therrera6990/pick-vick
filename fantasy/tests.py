@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import FantasyTeam, League, Player, Roster, Matchup
+from .models import FantasyTeam, League, Player, Roster, Matchup, Transaction
 
 
 class HomePageTests(TestCase):
@@ -768,6 +768,132 @@ class RosterTests(TestCase):
         self.assertTrue(self.player.available)
 
         self.assertEqual(response.status_code, 302)
+
+class TransactionTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="transactionuser",
+            password="testpass123",
+        )
+
+        self.league = League.objects.create(
+            name="Transaction Test League",
+            season=2026,
+            current_week=1,
+        )
+
+        self.team = FantasyTeam.objects.create(
+            league=self.league,
+            owner=self.user,
+            team_name="Transaction Team",
+            wins=0,
+            losses=0,
+            fantasy_points=0,
+        )
+
+        self.player= Player.objects.create(
+            name="Test Player",
+            position="WR",
+            nfl_team="SEA",
+            fantasy_points=10.00,
+            available=True,
+        )
+
+    def test_transaction_page_loads(self):
+        response = self.client.get(
+            reverse("transaction_list")
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+    def test_adding_player_creates_add_transaction(self):
+        self.client.login(
+            username="transactionuser",
+            password="testpass123",
+        )
+
+        self.client.post(
+            reverse(
+                "roster_add_player",
+                args=[self.team.id],
+            ),
+            {
+                "player_id": self.player.id,
+                "roster_position": "BENCH",
+            },
+        )
+
+        self.assertEqual(
+            Transaction.objects.count(),
+            1,
+        )
+
+        transaction = Transaction.objects.first()
+
+        self.assertEqual(
+            transaction.transaction_type,
+            "ADD",
+        )
+
+        self.assertEqual(
+            transaction.player,
+            self.player,
+        )
+
+        self.assertEqual(
+            transaction.fantasy_team,
+            self.team,
+        )
+
+    def test_dropping_player_creates_drop_transaction(self):
+        self.client.login(
+            username="transactionuser",
+            password="testpass123",
+        )
+
+        roster_entry = Roster.objects.create(
+            fantasy_team=self.team,
+            player=self.player,
+            roster_position="BENCH",
+        )
+
+        self.player.available = False
+        self.player.save()
+
+        self.client.post(
+            reverse(
+                "roster_drop_player",
+                args=[
+                    self.team.id,
+                    roster_entry.id,
+                ],
+            )
+        )
+
+        self.assertEqual(
+            Transaction.objects.count(),
+            1,
+        )
+
+        transaction = Transaction.objects.first()
+
+        self.assertEqual(
+            transaction.transaction_type,
+            "DROP",
+        )
+
+        self.assertEqual(
+            transaction.player,
+            self.player,
+        )
+
+        self.assertEqual(
+            transaction.fantasy_team,
+            self.team,
+        )
 
         
 class FantasyTeamTests(TestCase):
